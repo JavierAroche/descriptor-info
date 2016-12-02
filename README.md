@@ -12,7 +12,7 @@ Return complete Descriptor info in JSON format
 // Sample code for getting Descriptor properties with getProperties
 
 ```
-// Include the descriptorInfo constructor
+// Include the descriptorInfo module
 #include "~/Development/personal/descriptor-info/jsx/descriptor-info.jsx"
 
 // ActionDescriptor example
