@@ -217,6 +217,11 @@ Returns JSON for requested Descriptor info. Sample reply:
 }
 ```
 
+### Example
+---------
+* [descriptor-info-example](https://github.com/JavierAroche/descriptor-info/tree/master/example)
+
+
 ### Supported Descriptors
 ---------
 * DescValueType.BOOLEANTYPE
