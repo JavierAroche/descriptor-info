@@ -20,8 +20,15 @@ function DescriptorInfo() {}
  * @public
  * Handler function to get Action Descriptor properties
  * @param {Object} Action Descriptor
+ * @param {Object} Optional params object
+ *    @flag {Boolean} reference - return reference descriptors. Could slighly affect speed.
  */
-DescriptorInfo.prototype.getProperties = function( theDesc ) {
+DescriptorInfo.prototype.getProperties = function( theDesc, params ) {
+    // Define params
+    this.descParams = {
+        reference : params ? params.reference : false
+    };
+    
     if( theDesc == '[ActionList]' ) {
         return this._getDescList( theDesc );
     } else {
@@ -65,7 +72,9 @@ DescriptorInfo.prototype._getDescObject = function( theDesc, descObject ) {
                     break;
                     
                 case 'DescValueType.REFERENCETYPE':
-                    descProperties.reference = executeActionGet( descProperties.value );
+                    if( this.descParams.reference ) {
+                        descProperties.reference = executeActionGet( descProperties.value );
+                    }
                     break;
                 
                 default: 
@@ -75,7 +84,7 @@ DescriptorInfo.prototype._getDescObject = function( theDesc, descObject ) {
             descObject[objectName] = descProperties;
             
         } catch(err) {
-            console.log(descProperties.stringID + ' - ' + err)
+            $.writeln('error: ' + descProperties.stringID + ' - ' + err);
         }
     }
     
@@ -119,8 +128,12 @@ DescriptorInfo.prototype._getDescList = function( list ) {
                 listArray.push( this._getDescList( listItemValue ) );
                 break;
             
-            case 'DescValueType.REFERENCETYPE':                
-                listArray.push( executeActionGet( listItemValue ) );
+            case 'DescValueType.REFERENCETYPE':
+                if( this.descParams.reference ) {
+                    listArray.push( executeActionGet( listItemValue ) );
+                } else {
+                    listArray.push( listItemValue );
+                }
                 break;
 
             default: 
