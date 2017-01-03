@@ -9,6 +9,10 @@ JSX module to recursively get all the properties in an ActionDescriptor used in 
 #### getProperties
 Return complete Descriptor info in JSON format
 
+// Optional param object: descFlags
+
+// Optional flag boolean: reference - return reference descriptors. Could slighly affect speed.
+
 // Sample code for getting Descriptor properties with getProperties
 
 ```
@@ -244,6 +248,10 @@ Returns JSON for requested Descriptor info. Sample reply:
 
 ### Changelog
 ---------
+**v1.0.1 (Jan 3 2017)**
+* Added optional params to retrieve reference descriptors
+* Updated example to reflect new optional params
+
 **v1.0.0 (Dec 2 2016)**
 * Added descriptor-info JSX
 
