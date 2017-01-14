@@ -9,9 +9,9 @@ JSX module to recursively get all the properties in an ActionDescriptor used in 
 #### getProperties
 Return complete Descriptor info in JSON format
 
-// Optional param object: descFlags
-
-// Optional flag boolean: reference - return reference descriptors. Could slighly affect speed.
+* Optional @param {Object} descFlags
+* Optional @flag {Boolean} reference - return reference descriptors. Could slighly affect speed.
+* Optional @flag {Boolean} extended - returns extended information about the descriptor.
 
 // Sample code for getting Descriptor properties with getProperties
 
@@ -24,12 +24,130 @@ var ref = new ActionReference();
 ref.putEnumerated( charIDToTypeID("Lyr "), charIDToTypeID("Ordn"), charIDToTypeID("Trgt") );
 var desc = executeActionGet(ref); 
 
+// Optional
+var descFlags = {
+    reference : false,
+	extended : false
+};
+
 // Retrieve its properties by running the getProperties function, passing the ActionDescriptor as a param
-var descObject = descriptorInfo.getProperties( desc );
+var descObject = descriptorInfo.getProperties( desc, descFlags );
 ```
 
 
 Returns JSON for requested Descriptor info. Sample reply:
+```
+{
+    "name": "Layer 0",
+    "color": "none",
+    "visible": true,
+    "mode": "normal",
+    "opacity": 255,
+    "layerID": 4,
+    "itemIndex": 2,
+    "count": 3,
+    "preserveTransparency": false,
+    "layerFXVisible": false,
+    "globalAngle": 30,
+    "background": false,
+    "layerSection": "layerSectionContent",
+    "layerLocking": {
+        "protectTransparency": false,
+        "protectComposite": false,
+        "protectPosition": false,
+        "protectAll": false
+    },
+    "group": false,
+    "targetChannels": [
+        {
+            "typename": "ActionReference"
+        },
+        {
+            "typename": "ActionReference"
+        },
+        {
+            "typename": "ActionReference"
+        }
+    ],
+    "visibleChannels": [
+        {
+            "typename": "ActionReference"
+        },
+        {
+            "typename": "ActionReference"
+        },
+        {
+            "typename": "ActionReference"
+        }
+    ],
+    "channelRestrictions": [
+        "red",
+        "grain",
+        "blue"
+    ],
+    "fillOpacity": 255,
+    "hasUserMask": false,
+    "hasVectorMask": false,
+    "proportionalScaling": false,
+    "layerKind": 5,
+    "hasFilterMask": false,
+    "userMaskDensity": 255,
+    "userMaskFeather": 0,
+    "vectorMaskDensity": 255,
+    "vectorMaskFeather": 0,
+    "bounds": {
+        "top": -51,
+        "left": -104,
+        "bottom": 1599,
+        "right": 2312,
+        "width": 2416,
+        "height": 1650
+    },
+    "boundsNoEffects": {
+        "top": -51,
+        "left": -104,
+        "bottom": 1599,
+        "right": 2312,
+        "width": 2416,
+        "height": 1650
+    },
+    "smartObject": {
+        "placed": "rasterizeContent",
+        "documentID": "",
+        "compsList": {
+            "compID": -1,
+            "originalCompID": -1
+        },
+        "linked": false,
+        "fileReference": "Screen Shot 2017-01-13 at 12.52.30 PM.png"
+    },
+    "useAlignedRendering": false,
+    "generatorSettings": {
+        
+    },
+    "keyOriginType": [
+        
+    ],
+    "fillEnabled": false,
+    "animationProtection": {
+        "animationUnifyPosition": false,
+        "animationUnifyEffects": false,
+        "animationUnifyVisibility": false,
+        "animationPropagate": true
+    },
+    "artboard": {
+        "artboardRect": {
+            "top": 0,
+            "left": 0,
+            "bottom": 0,
+            "right": 0
+        }
+    },
+    "artboardEnabled": false
+}
+```
+
+Sample reply with extended flag set to true:
 ```
 {
     "name": {
@@ -38,13 +156,22 @@ Returns JSON for requested Descriptor info. Sample reply:
         "id": 1315774496,
         "key": 0,
         "type": "DescValueType.STRINGTYPE",
-        "value": "Background"
+        "value": "Layer 0"
+    },
+    "color": {
+        "stringID": "color",
+        "charID": "Clr ",
+        "id": 1131180576,
+        "key": 1,
+        "type": "DescValueType.ENUMERATEDTYPE",
+        "value": "none",
+        "enumerationType": "color"
     },
     "visible": {
         "stringID": "visible",
         "charID": "Vsbl",
         "id": 1450402412,
-        "key": 1,
+        "key": 2,
         "type": "DescValueType.BOOLEANTYPE",
         "value": true
     },
@@ -52,7 +179,7 @@ Returns JSON for requested Descriptor info. Sample reply:
         "stringID": "mode",
         "charID": "Md  ",
         "id": 1298407456,
-        "key": 2,
+        "key": 3,
         "type": "DescValueType.ENUMERATEDTYPE",
         "value": "normal",
         "enumerationType": "blendMode"
@@ -61,7 +188,7 @@ Returns JSON for requested Descriptor info. Sample reply:
         "stringID": "opacity",
         "charID": "Opct",
         "id": 1332765556,
-        "key": 3,
+        "key": 4,
         "type": "DescValueType.INTEGERTYPE",
         "value": 255
     },
@@ -69,59 +196,60 @@ Returns JSON for requested Descriptor info. Sample reply:
         "stringID": "layerID",
         "charID": "LyrI",
         "id": 1283027529,
-        "key": 4,
+        "key": 5,
         "type": "DescValueType.INTEGERTYPE",
-        "value": 1
+        "value": 4
     },
-    "bounds": {
-        "stringID": "bounds",
+    "itemIndex": {
+        "stringID": "itemIndex",
+        "charID": "ItmI",
+        "id": 1232366921,
+        "key": 6,
+        "type": "DescValueType.INTEGERTYPE",
+        "value": 2
+    },
+    "targetChannels": {
+        "stringID": "targetChannels",
         "charID": "",
-        "id": 1341,
-        "key": 20,
-        "type": "DescValueType.OBJECTTYPE",
+        "id": 3036,
+        "key": 15,
+        "type": "DescValueType.LISTTYPE",
         "value": {
-            "count": 4,
-            "typename": "ActionDescriptor"
+            "count": 3,
+            "typename": "ActionList"
         },
-        "object": {
-            "top": {
-                "stringID": "top",
-                "charID": "Top ",
-                "id": 1416589344,
-                "key": 0,
-                "type": "DescValueType.UNITDOUBLE",
-                "value": 0
+        "list": [
+            {
+                "typename": "ActionReference"
             },
-            "left": {
-                "stringID": "left",
-                "charID": "Left",
-                "id": 1281713780,
-                "key": 1,
-                "type": "DescValueType.UNITDOUBLE",
-                "value": 0
+            {
+                "typename": "ActionReference"
             },
-            "bottom": {
-                "stringID": "bottom",
-                "charID": "Btom",
-                "id": 1114926957,
-                "key": 2,
-                "type": "DescValueType.UNITDOUBLE",
-                "value": 2500
-            },
-            "right": {
-                "stringID": "right",
-                "charID": "Rght",
-                "id": 1382508660,
-                "key": 3,
-                "type": "DescValueType.UNITDOUBLE",
-                "value": 1594
+            {
+                "typename": "ActionReference"
             }
-        }
+        ]
+    },
+    "channelRestrictions": {
+        "stringID": "channelRestrictions",
+        "charID": "",
+        "id": 1196,
+        "key": 17,
+        "type": "DescValueType.LISTTYPE",
+        "value": {
+            "count": 3,
+            "typename": "ActionList"
+        },
+        "list": [
+            "red",
+            "grain",
+            "blue"
+        ]
     },
     "smartObject": {
         "stringID": "smartObject",
         "charID": "",
-        "id": 834,
+        "id": 829,
         "key": 30,
         "type": "DescValueType.OBJECTTYPE",
         "value": {
@@ -132,7 +260,7 @@ Returns JSON for requested Descriptor info. Sample reply:
             "placed": {
                 "stringID": "placed",
                 "charID": "",
-                "id": 2367,
+                "id": 2363,
                 "key": 0,
                 "type": "DescValueType.ENUMERATEDTYPE",
                 "value": "rasterizeContent",
@@ -144,12 +272,12 @@ Returns JSON for requested Descriptor info. Sample reply:
                 "id": 1148150601,
                 "key": 1,
                 "type": "DescValueType.STRINGTYPE",
-                "value": "xmp.did:bfeed619-610f-4c23-9a5d-d03a5d55286e"
+                "value": ""
             },
             "compsList": {
                 "stringID": "compsList",
                 "charID": "",
-                "id": 3048,
+                "id": 3017,
                 "key": 2,
                 "type": "DescValueType.OBJECTTYPE",
                 "value": {
@@ -172,50 +300,9 @@ Returns JSON for requested Descriptor info. Sample reply:
                 "id": 1181314130,
                 "key": 4,
                 "type": "DescValueType.STRINGTYPE",
-                "value": "imac_performance_and_design.psb"
+                "value": "Screen Shot 2017-01-13 at 12.52.30 PM.png"
             }
         }
-    },
-    "targetChannels": {
-        "stringID": "targetChannels",
-        "charID": "",
-        "id": 3072,
-        "key": 15,
-        "type": "DescValueType.LISTTYPE",
-        "value": {
-          "count": 3,
-          "typename": "ActionList"
-        },
-        "list": [
-            {
-              "count": 5,
-              "typename": "ActionDescriptor"
-            },
-            {
-              "count": 5,
-              "typename": "ActionDescriptor"
-            },
-            {
-              "count": 5,
-              "typename": "ActionDescriptor"
-            }
-        ]
-    },
-    "channelRestrictions": {
-        "stringID": "channelRestrictions",
-        "charID": "",
-        "id": 1201,
-        "key": 17,
-        "type": "DescValueType.LISTTYPE",
-        "value": {
-            "count": 3,
-            "typename": "ActionList"
-        },
-        "list": [
-            "red",
-            "grain",
-            "blue"
-        ]
     },
     ...
 }
@@ -248,6 +335,10 @@ Returns JSON for requested Descriptor info. Sample reply:
 
 ### Changelog
 ---------
+**v1.0.2 (Jan 13 2017)**
+* Added optional params to retrieve extended descriptor information
+* Updated example to reflect new optional params
+
 **v1.0.1 (Jan 3 2017)**
 * Added optional params to retrieve reference descriptors
 * Updated example to reflect new optional params
