@@ -10,7 +10,7 @@ JSX module to recursively get all the properties in an ActionDescriptor used in 
 Return complete Descriptor info in JSON format
 
 * Optional @param {Object} descFlags
-* Optional @flag {Boolean} reference - return reference descriptors. Could slighly affect speed.
+* Optional @flag {Boolean} reference - return reference descriptors. Could slightly affect speed.
 * Optional @flag {Boolean} extended - returns extended information about the descriptor.
 
 // Sample code for getting Descriptor properties with getProperties

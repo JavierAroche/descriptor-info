@@ -21,7 +21,7 @@ function DescriptorInfo() {}
  * Handler function to get Action Descriptor properties
  * @param {Object} Action Descriptor
  * @param {Object} Optional params object
- *    @flag {Boolean} reference - return reference descriptors. Could slighly affect speed.
+ *    @flag {Boolean} reference - return reference descriptors. Could slightly affect speed.
  *    @flag {Boolean} extended - returns extended information about the descriptor.
  */
 DescriptorInfo.prototype.getProperties = function( theDesc, params ) {

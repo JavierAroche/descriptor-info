@@ -10,7 +10,7 @@ var desc = executeActionGet(ref);
 
 // Retrieve its properties by running the getProperties function, passing the ActionDescriptor as a param
 // Optional @param {Object} descFlags
-// Optional @flag {Boolean} reference - return reference descriptors. Could slighly affect speed.
+// Optional @flag {Boolean} reference - return reference descriptors. Could slightly affect speed.
 // Optional @flag {Boolean} extended - returns extended information about the descriptor.
 var descFlags = {
     reference : false,
