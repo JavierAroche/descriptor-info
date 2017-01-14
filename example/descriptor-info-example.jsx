@@ -9,10 +9,12 @@ ref.putEnumerated( charIDToTypeID("Lyr "), charIDToTypeID("Ordn"), charIDToTypeI
 var desc = executeActionGet(ref);   
 
 // Retrieve its properties by running the getProperties function, passing the ActionDescriptor as a param
-// Optional param object: descFlags
-// Optional flag boolean: reference - return reference descriptors. Could slighly affect speed.
+// Optional @param {Object} descFlags
+// Optional @flag {Boolean} reference - return reference descriptors. Could slighly affect speed.
+// Optional @flag {Boolean} extended - returns extended information about the descriptor.
 var descFlags = {
-    reference : false
+    reference : false,
+	extended : false
 };
 
 var descObject = descriptorInfo.getProperties( desc ); // If using descFlags --> descriptorInfo.getProperties( desc, descFlags );
