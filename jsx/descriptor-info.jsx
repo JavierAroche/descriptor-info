@@ -22,11 +22,13 @@ function DescriptorInfo() {}
  * @param {Object} Action Descriptor
  * @param {Object} Optional params object
  *    @flag {Boolean} reference - return reference descriptors. Could slighly affect speed.
+ *    @flag {Boolean} extended - returns extended information about the descriptor.
  */
 DescriptorInfo.prototype.getProperties = function( theDesc, params ) {
     // Define params
     this.descParams = {
-        reference : params ? params.reference : false
+        reference : params ? params.reference : false,
+        extended : params ? params.extended : false
     };
     
     if( theDesc == '[ActionList]' ) {
@@ -46,25 +48,41 @@ DescriptorInfo.prototype._getDescObject = function( theDesc, descObject ) {
     for( var i = 0; i < theDesc.count; i++ ) {        
         try {
             var descType = ( theDesc.getType( theDesc.getKey(i) ) ).toString();
+			
+			var descProperties,
+				descStringID = typeIDToStringID( theDesc.getKey(i) ),
+				descCharID = typeIDToCharID( theDesc.getKey(i) );
             
-            var descProperties = {
-                stringID : typeIDToStringID( theDesc.getKey(i) ),
-                charID : typeIDToCharID( theDesc.getKey(i) ),
-                id : theDesc.getKey(i),
-                key : i,
-                type : descType,
-                value : this._getValue( theDesc, descType, theDesc.getKey(i) )
-            };
+			if( this.descParams.extended ) {
+				descProperties = {
+					stringID : descStringID,
+					charID : descCharID,
+					id : theDesc.getKey(i),
+					key : i,
+					type : descType,
+					value : this._getValue( theDesc, descType, theDesc.getKey(i) )
+				};
+			} else {
+				descProperties = this._getValue( theDesc, descType, theDesc.getKey(i) );
+			}
             
-            var objectName = descProperties.stringID == '' ? descProperties.charID : descProperties.stringID;
+            var objectName = descStringID == '' ? descCharID : descStringID;
             
             switch( descType ) {
                 case 'DescValueType.OBJECTTYPE':
-                    descProperties.object = this._getDescObject( descProperties.value, {} );
+					if( this.descParams.extended ) {
+						descProperties.object = this._getDescObject( descProperties.value, {} );
+					} else {
+						descProperties = this._getDescObject( descProperties, {} );
+					}
                     break;
                 
                 case 'DescValueType.LISTTYPE':
-                    descProperties.list = this._getDescList( descProperties.value );
+					if( this.descParams.extended ) {
+                    	descProperties.list = this._getDescList( descProperties.value );
+					} else {
+						descProperties = this._getDescList( descProperties );
+					}
                     break;
                     
                 case 'DescValueType.ENUMERATEDTYPE':
@@ -73,7 +91,11 @@ DescriptorInfo.prototype._getDescObject = function( theDesc, descObject ) {
                     
                 case 'DescValueType.REFERENCETYPE':
                     if( this.descParams.reference ) {
-                        descProperties.reference = executeActionGet( descProperties.value );
+						if( this.descParams.extended ) {
+							descProperties.reference = executeActionGet( descProperties.value );
+						} else {
+							descProperties = executeActionGet( descProperties );
+						}
                     }
                     break;
                 
@@ -84,7 +106,7 @@ DescriptorInfo.prototype._getDescObject = function( theDesc, descObject ) {
             descObject[objectName] = descProperties;
             
         } catch(err) {
-            $.writeln('error: ' + descProperties.stringID + ' - ' + err);
+            $.writeln('error: ' + descStringID + ' - ' + err);
         }
     }
     
@@ -100,26 +122,31 @@ DescriptorInfo.prototype._getDescList = function( list ) {
     var listArray = [];
         
     for ( var ii = 0; ii < list.count; ii++ ) {
-        
         var listItemType = list.getType(ii).toString();
         var listItemValue = this._getValue( list, listItemType, ii );
         
         switch( listItemType ) {
             case 'DescValueType.OBJECTTYPE':
                 var listItemOBJ = {};
+				
+				var listItemProperties,
+					descStringID = typeIDToStringID( list.getClass(ii) );
                 
-                var listItemProperties = {
-                    stringID : typeIDToStringID( list.getClass(ii) ),
-                    key : ii,
-                    type : listItemType,
-                    value : listItemValue
-                };
+				if( this.descParams.extended ) {
+					listItemProperties = {
+						stringID : descStringID,
+						key : ii,
+						type : listItemType,
+						value : listItemValue
+					};
+
+					listItemProperties.object = this._getDescObject( listItemValue, {} );
+				} else {
+					listItemProperties = this._getDescObject( listItemValue, {} );
+				}
                 
-                listItemProperties.object = this._getDescObject( listItemValue, {} );
-                
-                var listItemName = listItemProperties.stringID;
                 var listItemObject = {};
-                listItemObject[listItemName] = listItemProperties;
+                listItemObject[descStringID] = listItemProperties;
                 
                 listArray.push( listItemObject );
                 break;
