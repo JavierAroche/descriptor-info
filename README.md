@@ -13,7 +13,7 @@ Return complete Descriptor info in JSON format
 * Optional @flag {Boolean} reference - return reference descriptors. Could slightly affect speed.
 * Optional @flag {Boolean} extended - returns extended information about the descriptor.
 
-// Sample code for getting Descriptor properties with getProperties
+Sample code
 
 ```
 // Include the descriptorInfo module
