@@ -10,14 +10,14 @@ var desc = executeActionGet(ref);
 
 // Retrieve its properties by running the getProperties function, passing the ActionDescriptor as a param
 // Optional @param {Object} descFlags
-// Optional @flag {Boolean} reference - return reference descriptors. Could slightly affect speed.
-// Optional @flag {Boolean} extended - returns extended information about the descriptor.
+// Optional @flag {Boolean} reference - return reference descriptors. Could slightly affect speed. Default = false.
+// Optional @flag {Boolean} extended - returns extended information about the descriptor. Default = false.
 var descFlags = {
     reference : false,
 	extended : false
 };
 
-var descObject = descriptorInfo.getProperties( desc ); // If using descFlags --> descriptorInfo.getProperties( desc, descFlags );
+var descObject = descriptorInfo.getProperties( desc, descFlags );
 
 // Running in ExtendScript
 $.writeln(JSON.stringify(descObject, null, 4));
