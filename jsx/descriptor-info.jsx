@@ -99,7 +99,6 @@ DescriptorInfo.prototype._getDescObject = function( theDesc, descObject ) {
 						} else {
 							referenceValue = descProperties;
 						}
-						debugger;
 
 						try {
 							descProperties.actionReference = this._getActionReferenceInfo( referenceValue );
