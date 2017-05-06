@@ -1,4 +1,4 @@
-/*
+ /*
  *
  * Descriptor-Info
  * JSX script to recursively get all the properties in an ActionDescriptor used in Adobe applications
@@ -46,27 +46,30 @@ DescriptorInfo.prototype.getProperties = function( theDesc, params ) {
  */
 DescriptorInfo.prototype._getDescObject = function( theDesc, descObject ) {
     for( var i = 0; i < theDesc.count; i++ ) {        
-        try {
-            var descType = ( theDesc.getType( theDesc.getKey(i) ) ).toString();
+            var typeID = theDesc.getKey(i); // storing typeID in variable should save a litle bit of performance
+            var descType = ( theDesc.getType( typeID ) ).toString();
 			
 			var descProperties,
-				descStringID = typeIDToStringID( theDesc.getKey(i) ),
-				descCharID = typeIDToCharID( theDesc.getKey(i) );
+				descStringID = typeIDToStringID( typeID ),
+				descCharID = typeIDToCharID( typeID );
             
 			if( this.descParams.extended ) {
 				descProperties = {
 					stringID : descStringID,
 					charID : descCharID,
-					id : theDesc.getKey(i),
+					id : typeID,
 					key : i,
 					type : descType,
-					value : this._getValue( theDesc, descType, theDesc.getKey(i) )
+					value : this._getValue( theDesc, descType, typeID )
+                    
 				};
+            
 			} else {
-				descProperties = this._getValue( theDesc, descType, theDesc.getKey(i) );
+				descProperties = this._getValue( theDesc, descType, typeID );
 			}
             
-            var objectName = descStringID == '' ? descCharID : descStringID;
+            //var objectName = descStringID == '' ? descCharID : descStringID;
+            var objectName = this._getBestName (typeID);
             
             switch( descType ) {
                 case 'DescValueType.OBJECTTYPE':
@@ -86,16 +89,44 @@ DescriptorInfo.prototype._getDescObject = function( theDesc, descObject ) {
                     break;
                     
                 case 'DescValueType.ENUMERATEDTYPE':
-                    descProperties.enumerationType = typeIDToStringID(theDesc.getEnumerationType( theDesc.getKey(i) ));  
+                    descProperties.enumerationType = typeIDToStringID(theDesc.getEnumerationType( typeID ));  
                     break;
                     
-                case 'DescValueType.REFERENCETYPE':
+                case 'DescValueType.REFERENCETYPE': 
                     if( this.descParams.reference ) {
-						if( this.descParams.extended ) {
-							descProperties.reference = executeActionGet( descProperties.value );
-						} else {
-							descProperties = executeActionGet( descProperties );
-						}
+                          var referenceValue;
+                          
+                          if(this.descParams.extended) {
+                              referenceValue = descProperties.value;
+                          } else {
+                              referenceValue = descProperties;
+                          }
+                            debugger;
+                          // there is multiple try/catch because you never know which lines of code can get data and you don't want drop all
+                          // if this try/catch will wrap inside another try then data will drop
+                          try{
+                            descProperties.actionReference = this._getActionReferenceInfo (referenceValue);
+                          }catch(err){
+                              $.writeln("I can't read descProperties.value " + descStringID + ' - ' + err);
+                          }
+                      
+                          try{
+                              descProperties.actionReferenceContainer = this._getActionReferenceInfo (referenceValue.getContainer());
+                          }catch(err){
+                            $.writeln("I can't read descProperties.value.getContainer(): " + descStringID + ' - ' + err);
+                          }
+                      
+                          try{
+                            descProperties.reference = executeActionGet( referenceValue );
+                          }catch(err){
+                            $.writeln("I can't use executeActionGet from regular value: " + descStringID + ' - ' + err);
+                          }
+                      
+                          try{
+                            descProperties.referenceContainer = executeActionGet( referenceValue.getContainer() );
+                          }catch(err){
+                            $.writeln("I can't use executeActionGet from container: " + descStringID + ' - ' + err);
+                          }
                     }
                     break;
                 
@@ -104,10 +135,6 @@ DescriptorInfo.prototype._getDescObject = function( theDesc, descObject ) {
             }
             
             descObject[objectName] = descProperties;
-            
-        } catch(err) {
-            $.writeln('error: ' + descStringID + ' - ' + err);
-        }
     }
     
     return descObject;
@@ -183,7 +210,8 @@ DescriptorInfo.prototype._getDescList = function( list ) {
  * @param {String} Action Descriptor type
  * @param {Number} Action Descriptor Key / Index
  */
-DescriptorInfo.prototype._getValue = function( theDesc, descType, position ) {    
+DescriptorInfo.prototype._getValue = function( theDesc, descType, position ) {   
+    
     switch( descType ) {  
         case 'DescValueType.BOOLEANTYPE':  
             return theDesc.getBoolean( position );  
@@ -233,11 +261,85 @@ DescriptorInfo.prototype._getValue = function( theDesc, descType, position ) {
         case 'DescValueType.RAWTYPE':  
             return theDesc.getData( position );
             break;
+            
+        // ReferenceFormType
+            
+        case 'ReferenceFormType.CLASSTYPE':
+            return theDesc.getDesiredClass(); //I am not sure if makes sense
+            break;
+            
+        case 'ReferenceFormType.ENUMERATED':
+            var enumeratedID = theDesc.getEnumeratedValue();
+            return this._getBestName (enumeratedID);
+            break;
+            
+        case 'ReferenceFormType.IDENTIFIER':
+            return theDesc.getIdentifier();
+            break;
+            
+        case 'ReferenceFormType.INDEX':
+            return theDesc.getIndex();
+            break;
+            
+        case 'ReferenceFormType.NAME':
+            var str = '';
+            return str + theDesc.getName();
+            break;
+            
+        case 'ReferenceFormType.OFFSET':
+            return theDesc.getOffset();
+            break;
+            
+        case 'ReferenceFormType.PROPERTY':
+            var propertyID = theDesc.getProperty();
+            return this._getBestName (propertyID);
+            break;
 
         default:
             break;  
     };
 };
 
-// Create a new Descriptor instance
-var descriptorInfo = new DescriptorInfo();
+/*
+ * @private
+ *
+ * Handler function to get the info about action reference
+ * @param {Object} Action Reference
+ */
+
+DescriptorInfo.prototype._getActionReferenceInfo = function(reference){
+    var form = reference.getForm().toString();
+    var classID = reference.getDesiredClass();
+    var info;
+    
+    if( this.descParams.extended ){
+        info = {
+            stringID: typeIDToStringID(classID),
+            charID: typeIDToCharID(classID),
+            id: classID,
+            type: form,
+            value: this._getValue(reference, form, 0)
+        };
+    }
+
+    else{
+        info = this._getValue(reference, form, 0);
+    }
+    
+    return info;
+}
+
+
+/*
+ * @private
+ *
+ * Handler function to get the best name for typeID
+ * @param {Number} typeID
+ */
+DescriptorInfo.prototype._getBestName = function (typeID){
+    var stringValue = typeIDToStringID(typeID);
+    var charValue = typeIDToCharID(typeID);
+    if(stringValue) return stringValue;
+    else if(charValue) return charValue;
+    else return propertyID+""; //I am not sure if everything has stringID or charID
+}
