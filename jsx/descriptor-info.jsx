@@ -46,7 +46,7 @@ DescriptorInfo.prototype.getProperties = function( theDesc, params ) {
  */
 DescriptorInfo.prototype._getDescObject = function( theDesc, descObject ) {
     for( var i = 0; i < theDesc.count; i++ ) {        
-            var typeID = theDesc.getKey(i); // storing typeID in variable should save a litle bit of performance
+            var typeID = theDesc.getKey(i);
             var descType = ( theDesc.getType( typeID ) ).toString();
 			
 			var descProperties,
@@ -68,8 +68,7 @@ DescriptorInfo.prototype._getDescObject = function( theDesc, descObject ) {
 				descProperties = this._getValue( theDesc, descType, typeID );
 			}
             
-            //var objectName = descStringID == '' ? descCharID : descStringID;
-            var objectName = this._getBestName (typeID);
+            var objectName = this._getBestName( typeID );
             
             switch( descType ) {
                 case 'DescValueType.OBJECTTYPE':
@@ -94,39 +93,38 @@ DescriptorInfo.prototype._getDescObject = function( theDesc, descObject ) {
                     
                 case 'DescValueType.REFERENCETYPE': 
                     if( this.descParams.reference ) {
-                          var referenceValue;
-                          
-                          if(this.descParams.extended) {
-                              referenceValue = descProperties.value;
-                          } else {
-                              referenceValue = descProperties;
-                          }
-                            debugger;
-                          // there is multiple try/catch because you never know which lines of code can get data and you don't want drop all
-                          // if this try/catch will wrap inside another try then data will drop
-                          try{
-                            descProperties.actionReference = this._getActionReferenceInfo (referenceValue);
-                          }catch(err){
-                              $.writeln("I can't read descProperties.value " + descStringID + ' - ' + err);
-                          }
-                      
-                          try{
-                              descProperties.actionReferenceContainer = this._getActionReferenceInfo (referenceValue.getContainer());
-                          }catch(err){
-                            $.writeln("I can't read descProperties.value.getContainer(): " + descStringID + ' - ' + err);
-                          }
-                      
-                          try{
-                            descProperties.reference = executeActionGet( referenceValue );
-                          }catch(err){
-                            $.writeln("I can't use executeActionGet from regular value: " + descStringID + ' - ' + err);
-                          }
-                      
-                          try{
-                            descProperties.referenceContainer = executeActionGet( referenceValue.getContainer() );
-                          }catch(err){
-                            $.writeln("I can't use executeActionGet from container: " + descStringID + ' - ' + err);
-                          }
+						var referenceValue;
+
+						if( this.descParams.extended ) {
+							referenceValue = descProperties.value;
+						} else {
+							referenceValue = descProperties;
+						}
+						debugger;
+
+						try {
+							descProperties.actionReference = this._getActionReferenceInfo( referenceValue );
+						} catch( err) {
+							$.writeln( "Unable to get value: " + descStringID + ' - ' + err );
+						}
+
+						try {
+							descProperties.actionReferenceContainer = this._getActionReferenceInfo( referenceValue.getContainer() );
+						} catch( err ) {
+							$.writeln( "Unable to get container: " + descStringID + ' - ' + err );
+						}
+
+						try {
+							descProperties.reference = executeActionGet( referenceValue );
+						} catch( err ) {
+							$.writeln( "Unable to run executeActionGet from value: " + descStringID + ' - ' + err );
+						}
+
+						try {
+							descProperties.referenceContainer = executeActionGet( referenceValue.getContainer() );
+						} catch( err ) {
+							$.writeln( "Unable to run executeActionGet from container: " + descStringID + ' - ' + err );
+						}
                     }
                     break;
                 
@@ -262,15 +260,13 @@ DescriptorInfo.prototype._getValue = function( theDesc, descType, position ) {
             return theDesc.getData( position );
             break;
             
-        // ReferenceFormType
-            
         case 'ReferenceFormType.CLASSTYPE':
-            return theDesc.getDesiredClass(); //I am not sure if makes sense
+            return theDesc.getDesiredClass();
             break;
             
         case 'ReferenceFormType.ENUMERATED':
             var enumeratedID = theDesc.getEnumeratedValue();
-            return this._getBestName (enumeratedID);
+            return this._getBestName( enumeratedID );
             break;
             
         case 'ReferenceFormType.IDENTIFIER':
@@ -292,7 +288,7 @@ DescriptorInfo.prototype._getValue = function( theDesc, descType, position ) {
             
         case 'ReferenceFormType.PROPERTY':
             var propertyID = theDesc.getProperty();
-            return this._getBestName (propertyID);
+            return this._getBestName( propertyID );
             break;
 
         default:
@@ -307,23 +303,21 @@ DescriptorInfo.prototype._getValue = function( theDesc, descType, position ) {
  * @param {Object} Action Reference
  */
 
-DescriptorInfo.prototype._getActionReferenceInfo = function(reference){
+DescriptorInfo.prototype._getActionReferenceInfo = function( reference ) {
     var form = reference.getForm().toString();
     var classID = reference.getDesiredClass();
     var info;
     
-    if( this.descParams.extended ){
+    if( this.descParams.extended ) {
         info = {
-            stringID: typeIDToStringID(classID),
-            charID: typeIDToCharID(classID),
+            stringID: typeIDToStringID( classID ),
+            charID: typeIDToCharID( classID ),
             id: classID,
             type: form,
-            value: this._getValue(reference, form, 0)
+            value: this._getValue( reference, form, 0 )
         };
-    }
-
-    else{
-        info = this._getValue(reference, form, 0);
+    } else {
+        info = this._getValue( reference, form, 0 );
     }
     
     return info;
@@ -336,12 +330,17 @@ DescriptorInfo.prototype._getActionReferenceInfo = function(reference){
  * Handler function to get the best name for typeID
  * @param {Number} typeID
  */
-DescriptorInfo.prototype._getBestName = function (typeID){
-    var stringValue = typeIDToStringID(typeID);
-    var charValue = typeIDToCharID(typeID);
-    if(stringValue) return stringValue;
-    else if(charValue) return charValue;
-    else return propertyID+""; //I am not sure if everything has stringID or charID
+DescriptorInfo.prototype._getBestName = function( typeID ) {
+    var stringValue = typeIDToStringID( typeID );
+    var charValue = typeIDToCharID( typeID );
+	
+    if( stringValue ) {
+		return stringValue;
+	} else if( charValue ) {
+		return charValue;
+	} else {
+		return propertyID + "";
+	}
 }
 
 // Create a new Descriptor instance
