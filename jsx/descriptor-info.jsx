@@ -339,7 +339,7 @@ DescriptorInfo.prototype._getBestName = function( typeID ) {
 	} else if( charValue ) {
 		return charValue;
 	} else {
-		return propertyID + "";
+		return typeID + "";
 	}
 }
 
