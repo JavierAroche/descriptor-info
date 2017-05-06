@@ -343,3 +343,6 @@ DescriptorInfo.prototype._getBestName = function (typeID){
     else if(charValue) return charValue;
     else return propertyID+""; //I am not sure if everything has stringID or charID
 }
+
+// Create a new Descriptor instance
+var descriptorInfo = new DescriptorInfo();
