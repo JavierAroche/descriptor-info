@@ -25,17 +25,17 @@ function DescriptorInfo() {}
  *    @flag {Boolean} extended - returns extended information about the descriptor. Default = false.
  */
 DescriptorInfo.prototype.getProperties = function( theDesc, params ) {
-    // Define params
-    this.descParams = {
-        reference : params ? params.reference : false,
-        extended : params ? params.extended : false
-    };
-    
-    if( theDesc == '[ActionList]' ) {
-        return this._getDescList( theDesc );
-    } else {
-        return this._getDescObject( theDesc, {} );
-    }
+	// Define params
+	this.descParams = {
+		reference : params ? params.reference : false,
+		extended : params ? params.extended : false
+	};
+
+	if( theDesc == '[ActionList]' ) {
+		return this._getDescList( theDesc );
+	} else {
+		return this._getDescObject( theDesc, {} );
+	}
 };
 
 /*
@@ -45,9 +45,9 @@ DescriptorInfo.prototype.getProperties = function( theDesc, params ) {
  * @param {Object} Empty object to return (required since it's a recursive function)
  */
 DescriptorInfo.prototype._getDescObject = function( theDesc, descObject ) {
-    for( var i = 0; i < theDesc.count; i++ ) {        
-            var typeID = theDesc.getKey(i);
-            var descType = ( theDesc.getType( typeID ) ).toString();
+	for ( var i = 0; i < theDesc.count; i++ ) {
+			var typeID = theDesc.getKey(i);
+			var descType = ( theDesc.getType( typeID ) ).toString();
 			
 			var descProperties,
 				descStringID = typeIDToStringID( typeID ),
@@ -61,25 +61,24 @@ DescriptorInfo.prototype._getDescObject = function( theDesc, descObject ) {
 					key : i,
 					type : descType,
 					value : this._getValue( theDesc, descType, typeID )
-                    
 				};
             
 			} else {
 				descProperties = this._getValue( theDesc, descType, typeID );
 			}
             
-            var objectName = this._getBestName( typeID );
+			var objectName = this._getBestName( typeID );
             
-            switch( descType ) {
-                case 'DescValueType.OBJECTTYPE':
+			switch( descType ) {
+				case 'DescValueType.OBJECTTYPE':
 					if( this.descParams.extended ) {
 						descProperties.object = this._getDescObject( descProperties.value, {} );
 					} else {
 						descProperties = this._getDescObject( descProperties, {} );
 					}
-                    break;
+				break;
                 
-                case 'DescValueType.LISTTYPE':
+			case 'DescValueType.LISTTYPE':
 					if( this.descParams.extended ) {
                     	descProperties.list = this._getDescList( descProperties.value );
 					} else {
@@ -87,12 +86,12 @@ DescriptorInfo.prototype._getDescObject = function( theDesc, descObject ) {
 					}
                     break;
                     
-                case 'DescValueType.ENUMERATEDTYPE':
-                    descProperties.enumerationType = typeIDToStringID(theDesc.getEnumerationType( typeID ));  
-                    break;
-                    
-                case 'DescValueType.REFERENCETYPE': 
-                    if( this.descParams.reference ) {
+			case 'DescValueType.ENUMERATEDTYPE':
+				descProperties.enumerationType = typeIDToStringID(theDesc.getEnumerationType( typeID ));  
+				break;
+
+			case 'DescValueType.REFERENCETYPE': 
+				if( this.descParams.reference ) {
 						var referenceValue;
 
 						if( this.descParams.extended ) {
@@ -125,17 +124,17 @@ DescriptorInfo.prototype._getDescObject = function( theDesc, descObject ) {
 						} catch( err ) {
 							$.writeln( "Unable to run executeActionGet from container: " + descStringID + ' - ' + err );
 						}
-                    }
-                    break;
-                
-                default: 
-                    break;
-            }
-            
-            descObject[objectName] = descProperties;
-    }
-    
-    return descObject;
+					}
+					break;
+
+				default: 
+					break;
+			}
+
+			descObject[objectName] = descProperties;
+	}
+
+	return descObject;
 };
 
 /*
@@ -144,15 +143,15 @@ DescriptorInfo.prototype._getDescObject = function( theDesc, descObject ) {
  * @param {Object} Action List
  */
 DescriptorInfo.prototype._getDescList = function( list ) {
-    var listArray = [];
-        
-    for ( var ii = 0; ii < list.count; ii++ ) {
-        var listItemType = list.getType(ii).toString();
-        var listItemValue = this._getValue( list, listItemType, ii );
-        
-        switch( listItemType ) {
-            case 'DescValueType.OBJECTTYPE':
-                var listItemOBJ = {};
+	var listArray = [];
+
+	for ( var ii = 0; ii < list.count; ii++ ) {
+		var listItemType = list.getType(ii).toString();
+		var listItemValue = this._getValue( list, listItemType, ii );
+
+		switch( listItemType ) {
+			case 'DescValueType.OBJECTTYPE':
+				var listItemOBJ = {};
 				
 				var listItemProperties,
 					descStringID = typeIDToStringID( list.getClass(ii) );
@@ -170,31 +169,31 @@ DescriptorInfo.prototype._getDescList = function( list ) {
 					listItemProperties = this._getDescObject( listItemValue, {} );
 				}
                 
-                var listItemObject = {};
-                listItemObject[descStringID] = listItemProperties;
-                
-                listArray.push( listItemObject );
-                break;
+				var listItemObject = {};
+				listItemObject[descStringID] = listItemProperties;
 
-            case 'DescValueType.LISTTYPE':
-                listArray.push( this._getDescList( listItemValue ) );
-                break;
-            
-            case 'DescValueType.REFERENCETYPE':
-                if( this.descParams.reference ) {
-                    listArray.push( executeActionGet( listItemValue ) );
-                } else {
-                    listArray.push( listItemValue );
-                }
-                break;
+				listArray.push( listItemObject );
+				break;
 
-            default: 
-                listArray.push( listItemValue );
-                break;
-        }
-    }
-    
-    return listArray;
+			case 'DescValueType.LISTTYPE':
+				listArray.push( this._getDescList( listItemValue ) );
+				break;
+
+			case 'DescValueType.REFERENCETYPE':
+				if( this.descParams.reference ) {
+					listArray.push( executeActionGet( listItemValue ) );
+				} else {
+					listArray.push( listItemValue );
+				}
+				break;
+
+			default: 
+				listArray.push( listItemValue );
+				break;
+		}
+	}
+
+	return listArray;
 }
 
 /*
@@ -208,92 +207,91 @@ DescriptorInfo.prototype._getDescList = function( list ) {
  * @param {String} Action Descriptor type
  * @param {Number} Action Descriptor Key / Index
  */
-DescriptorInfo.prototype._getValue = function( theDesc, descType, position ) {   
-    
-    switch( descType ) {  
-        case 'DescValueType.BOOLEANTYPE':  
-            return theDesc.getBoolean( position );  
-            break;
+DescriptorInfo.prototype._getValue = function( theDesc, descType, position ) {
+	switch( descType ) {
+		case 'DescValueType.BOOLEANTYPE':  
+			return theDesc.getBoolean( position );  
+			break;
 
-        case 'DescValueType.CLASSTYPE':  
-            return theDesc.getClass( position );  
-            break;
+		case 'DescValueType.CLASSTYPE':  
+			return theDesc.getClass( position );  
+			break;
 
-        case 'DescValueType.DOUBLETYPE':  
-            return theDesc.getDouble( position );  
-            break;
+		case 'DescValueType.DOUBLETYPE':  
+			return theDesc.getDouble( position );  
+			break;
 
-        case 'DescValueType.ENUMERATEDTYPE':  
-            return typeIDToStringID(theDesc.getEnumerationValue( position ));  
-            break;
+		case 'DescValueType.ENUMERATEDTYPE':  
+			return typeIDToStringID(theDesc.getEnumerationValue( position ));  
+			break;
 
-        case 'DescValueType.INTEGERTYPE':  
-            return theDesc.getInteger( position );  
-            break;
+		case 'DescValueType.INTEGERTYPE':  
+			return theDesc.getInteger( position );  
+			break;
 
-        case 'DescValueType.LISTTYPE':  
-            return theDesc.getList( position );  
-            break;
+		case 'DescValueType.LISTTYPE':  
+			return theDesc.getList( position );  
+			break;
 
-        case 'DescValueType.OBJECTTYPE':
-            return theDesc.getObjectValue( position );  
-            break;
+		case 'DescValueType.OBJECTTYPE':
+			return theDesc.getObjectValue( position );  
+			break;
 
-        case 'DescValueType.REFERENCETYPE':
-            return theDesc.getReference( position );  
-            break;
+		case 'DescValueType.REFERENCETYPE':
+			return theDesc.getReference( position );  
+			break;
 
-        case 'DescValueType.STRINGTYPE':
-            var str = '';
-            return str + theDesc.getString( position );  
-            break;
+		case 'DescValueType.STRINGTYPE':
+			var str = '';
+			return str + theDesc.getString( position );  
+			break;
 
-        case 'DescValueType.UNITDOUBLE':  
-            return theDesc.getUnitDoubleValue( position );  
-            break;        
-        
-        case 'DescValueType.ALIASTYPE':  
-            return decodeURI(theDesc.getPath( position ));
-            break;
-        
-        case 'DescValueType.RAWTYPE':  
-            return theDesc.getData( position );
-            break;
-            
-        case 'ReferenceFormType.CLASSTYPE':
-            return theDesc.getDesiredClass();
-            break;
-            
-        case 'ReferenceFormType.ENUMERATED':
-            var enumeratedID = theDesc.getEnumeratedValue();
-            return this._getBestName( enumeratedID );
-            break;
-            
-        case 'ReferenceFormType.IDENTIFIER':
-            return theDesc.getIdentifier();
-            break;
-            
-        case 'ReferenceFormType.INDEX':
-            return theDesc.getIndex();
-            break;
-            
-        case 'ReferenceFormType.NAME':
-            var str = '';
-            return str + theDesc.getName();
-            break;
-            
-        case 'ReferenceFormType.OFFSET':
-            return theDesc.getOffset();
-            break;
-            
-        case 'ReferenceFormType.PROPERTY':
-            var propertyID = theDesc.getProperty();
-            return this._getBestName( propertyID );
-            break;
+		case 'DescValueType.UNITDOUBLE':  
+			return theDesc.getUnitDoubleValue( position );  
+			break;        
 
-        default:
-            break;  
-    };
+		case 'DescValueType.ALIASTYPE':  
+			return decodeURI(theDesc.getPath( position ));
+			break;
+
+		case 'DescValueType.RAWTYPE':  
+			return theDesc.getData( position );
+			break;
+
+		case 'ReferenceFormType.CLASSTYPE':
+			return theDesc.getDesiredClass();
+			break;
+
+		case 'ReferenceFormType.ENUMERATED':
+			var enumeratedID = theDesc.getEnumeratedValue();
+			return this._getBestName( enumeratedID );
+			break;
+
+		case 'ReferenceFormType.IDENTIFIER':
+			return theDesc.getIdentifier();
+			break;
+
+		case 'ReferenceFormType.INDEX':
+			return theDesc.getIndex();
+			break;
+
+		case 'ReferenceFormType.NAME':
+			var str = '';
+			return str + theDesc.getName();
+			break;
+
+		case 'ReferenceFormType.OFFSET':
+			return theDesc.getOffset();
+			break;
+
+		case 'ReferenceFormType.PROPERTY':
+			var propertyID = theDesc.getProperty();
+			return this._getBestName( propertyID );
+			break;
+
+		default:
+			break;  
+	};
 };
 
 /*
@@ -304,23 +302,23 @@ DescriptorInfo.prototype._getValue = function( theDesc, descType, position ) {
  */
 
 DescriptorInfo.prototype._getActionReferenceInfo = function( reference ) {
-    var form = reference.getForm().toString();
-    var classID = reference.getDesiredClass();
-    var info;
-    
-    if( this.descParams.extended ) {
-        info = {
-            stringID : typeIDToStringID( classID ),
-            charID : typeIDToCharID( classID ),
-            id : classID,
-            type : form,
-            value : this._getValue( reference, form, 0 )
-        };
-    } else {
-        info = this._getValue( reference, form, 0 );
-    }
-    
-    return info;
+	var form = reference.getForm().toString();
+	var classID = reference.getDesiredClass();
+	var info;
+
+	if( this.descParams.extended ) {
+		info = {
+			stringID : typeIDToStringID( classID ),
+			charID : typeIDToCharID( classID ),
+			id : classID,
+			type : form,
+			value : this._getValue( reference, form, 0 )
+		};
+	} else {
+		info = this._getValue( reference, form, 0 );
+	}
+
+	return info;
 }
 
 
@@ -331,10 +329,10 @@ DescriptorInfo.prototype._getActionReferenceInfo = function( reference ) {
  * @param {Number} typeID
  */
 DescriptorInfo.prototype._getBestName = function( typeID ) {
-    var stringValue = typeIDToStringID( typeID );
-    var charValue = typeIDToCharID( typeID );
-	
-    if( stringValue ) {
+	var stringValue = typeIDToStringID( typeID );
+	var charValue = typeIDToCharID( typeID );
+
+	if( stringValue ) {
 		return stringValue;
 	} else if( charValue ) {
 		return charValue;
