@@ -310,11 +310,11 @@ DescriptorInfo.prototype._getActionReferenceInfo = function( reference ) {
     
     if( this.descParams.extended ) {
         info = {
-            stringID: typeIDToStringID( classID ),
-            charID: typeIDToCharID( classID ),
-            id: classID,
-            type: form,
-            value: this._getValue( reference, form, 0 )
+            stringID : typeIDToStringID( classID ),
+            charID : typeIDToCharID( classID ),
+            id : classID,
+            type : form,
+            value : this._getValue( reference, form, 0 )
         };
     } else {
         info = this._getValue( reference, form, 0 );
