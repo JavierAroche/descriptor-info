@@ -179,8 +179,42 @@ DescriptorInfo.prototype._getDescList = function( list ) {
 				break;
 
 			case 'DescValueType.REFERENCETYPE':
-				if( this.descParams.reference ) {
-					listArray.push( executeActionGet( listItemValue ) );
+				if( this.descParams.reference ) {					
+					var referenceValue;
+					var referenceProperties = {};
+					
+					if( this.descParams.extended ) {
+						referenceValue = listItemValue;
+					} else {
+						referenceValue = listItemProperties;
+					}
+					
+					try {
+						referenceProperties.actionReference = this._getActionReferenceInfo( referenceValue );
+					} catch( err) {
+						$.writeln( "Unable to get value: " + descStringID + ' - ' + err );
+					}
+
+					try {
+						referenceProperties.actionReferenceContainer = this._getActionReferenceInfo( referenceValue.getContainer() );
+					} catch( err ) {
+						$.writeln( "Unable to get container: " + descStringID + ' - ' + err );
+					}
+
+					try {
+						referenceProperties.reference = executeActionGet( referenceValue );
+					} catch( err ) {
+						$.writeln( "Unable to run executeActionGet from value: " + descStringID + ' - ' + err );
+					}
+
+					try {
+						referenceProperties.referenceContainer = executeActionGet( referenceValue.getContainer() );
+					} catch( err ) {
+						$.writeln( "Unable to run executeActionGet from container: " + descStringID + ' - ' + err );
+					}
+					
+					listArray.push( referenceProperties );
+					
 				} else {
 					listArray.push( listItemValue );
 				}
