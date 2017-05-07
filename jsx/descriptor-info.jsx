@@ -180,35 +180,28 @@ DescriptorInfo.prototype._getDescList = function( list ) {
 
 			case 'DescValueType.REFERENCETYPE':
 				if( this.descParams.reference ) {					
-					var referenceValue;
 					var referenceProperties = {};
 					
-					if( this.descParams.extended ) {
-						referenceValue = listItemValue;
-					} else {
-						referenceValue = listItemProperties;
-					}
-					
 					try {
-						referenceProperties.actionReference = this._getActionReferenceInfo( referenceValue );
+						referenceProperties.actionReference = this._getActionReferenceInfo( listItemValue );
 					} catch( err) {
 						$.writeln( "Unable to get value: " + descStringID + ' - ' + err );
 					}
 
 					try {
-						referenceProperties.actionReferenceContainer = this._getActionReferenceInfo( referenceValue.getContainer() );
+						referenceProperties.actionReferenceContainer = this._getActionReferenceInfo( listItemValue.getContainer() );
 					} catch( err ) {
 						$.writeln( "Unable to get container: " + descStringID + ' - ' + err );
 					}
 
 					try {
-						referenceProperties.reference = executeActionGet( referenceValue );
+						referenceProperties.reference = executeActionGet( listItemValue );
 					} catch( err ) {
 						$.writeln( "Unable to run executeActionGet from value: " + descStringID + ' - ' + err );
 					}
 
 					try {
-						referenceProperties.referenceContainer = executeActionGet( referenceValue.getContainer() );
+						referenceProperties.referenceContainer = executeActionGet( listItemValue.getContainer() );
 					} catch( err ) {
 						$.writeln( "Unable to run executeActionGet from container: " + descStringID + ' - ' + err );
 					}
