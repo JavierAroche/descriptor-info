@@ -23,12 +23,14 @@ function DescriptorInfo() {}
  * @param {Object} Optional params object
  *    @flag {Boolean} reference - return reference descriptors. Could slightly affect speed. Default = false.
  *    @flag {Boolean} extended - returns extended information about the descriptor. Default = false.
+ *    @flag {Number} maxRawLimit - limits the max number of characters from a RAWTYPE descriptor. Default = 10000.
  */
 DescriptorInfo.prototype.getProperties = function( theDesc, params ) {
 	// Define params
 	this.descParams = {
 		reference : params ? params.reference : false,
-		extended : params ? params.extended : false
+		extended : params ? params.extended : false,
+		maxRawLimit : params ? params.maxRawLimit : 10000
 	};
 
 	if( theDesc == '[ActionList]' ) {
@@ -62,7 +64,6 @@ DescriptorInfo.prototype._getDescObject = function( theDesc, descObject ) {
 					type : descType,
 					value : this._getValue( theDesc, descType, typeID )
 				};
-            
 			} else {
 				descProperties = this._getValue( theDesc, descType, typeID );
 			}
@@ -281,7 +282,7 @@ DescriptorInfo.prototype._getValue = function( theDesc, descType, position ) {
 			break;
 
 		case 'DescValueType.RAWTYPE':  
-			return theDesc.getData( position );
+			return theDesc.getData( position ).substring( 0, this.descParams.maxRawLimit );
 			break;
 
 		case 'ReferenceFormType.CLASSTYPE':

@@ -12,9 +12,11 @@ var desc = executeActionGet(ref);
 // Optional @param {Object} descFlags
 // Optional @flag {Boolean} reference - return reference descriptors. Could slightly affect speed. Default = false.
 // Optional @flag {Boolean} extended - returns extended information about the descriptor. Default = false.
+// Optional @flag {Number} maxRawLimit - limits the max number of characters from a RAWTYPE descriptor. Default = 10000.
 var descFlags = {
     reference : false,
-	extended : false
+	extended : false,
+	maxRawLimit : 10000
 };
 
 var descObject = descriptorInfo.getProperties( desc, descFlags );
