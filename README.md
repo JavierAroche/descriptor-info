@@ -1,5 +1,5 @@
 # Descriptor Info
-[![npm-image](https://img.shields.io/badge/descriptor--info--v1.1.0-09bc00.svg)](https://github.com/JavierAroche/parse-action-descriptor-code)
+[![npm-image](https://img.shields.io/badge/Descriptor%20Info-v1.1.0-09bc00.svg)](https://github.com/JavierAroche/parse-action-descriptor-code)
 
 ## Description
 JSX module to recursively get all the properties in an `ActionDescriptor` used in Adobe applications.
