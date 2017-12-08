@@ -8,25 +8,35 @@ JSX module to recursively get all the properties in an `ActionDescriptor` used i
 **getProperties**
 
 Return complete Descriptor info in JSON format
-
-* Optional @param {Object} descFlags
-* Optional @flag {Boolean} reference - return reference descriptors. Could slighly affect speed.
-* Optional @flag {Boolean} extended - returns extended information about the descriptor.
+```javascript
+/**
+  * @param {Boolean} reference - return reference descriptors. Could slightly affect speed. Default = false.
+  * @param {Boolean} extended - returns extended information about the descriptor. Default = false.
+  * @param {Number} maxRawLimit - limits the max number of characters from a RAWTYPE descriptor. Default = 10000.
+  * @param {Number} maxXMPLimit - limits the max number of characters from an XMPMetadataAsUTF8 property. Default = 10000.
+  * @param {String} saveToFile - Saves the descriptor to a JSON file. Default = '~/Desktop/descriptor-info.json'.
+  */
+```
 
 **Sample code for getting Descriptor properties with getProperties**
 ```javascript
-// Include the descriptorInfo module
-#include "~/dev/descriptor-info/jsx/descriptor-info.jsx"
+// Include the JSON helper
+#include "./helpers/JSON.jsx"
+// Include the descriptor-info module
+#include "../jsx/descriptor-info.jsx"
 
 // ActionDescriptor example
 var ref = new ActionReference();
-ref.putEnumerated( charIDToTypeID("Lyr "), charIDToTypeID("Ordn"), charIDToTypeID("Trgt") );
+ref.putEnumerated( charIDToTypeID("Dcmn"), charIDToTypeID("Ordn"), charIDToTypeID("Trgt") );
 var desc = executeActionGet(ref);
 
 // Optional
 var descFlags = {
-    reference : false,
-	extended : false
+	reference : false,
+	extended : false,
+	maxRawLimit : 10000,
+	maxXMPLimit : 100000,
+	saveToFile: '~/Desktop/descriptor-info.json'
 };
 
 // Retrieve its properties by running the getProperties function, passing the ActionDescriptor as a param
