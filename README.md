@@ -1,4 +1,5 @@
 # Descriptor Info
+[![npm-image](https://img.shields.io/badge/descriptor--info--v1.1.0-09bc00.svg)](https://github.com/JavierAroche/parse-action-descriptor-code)
 
 ## Description
 JSX module to recursively get all the properties in an `ActionDescriptor` used in Adobe applications.
@@ -339,6 +340,11 @@ var descObject = descriptorInfo.getProperties( desc, descFlags );
 * `RAWTYPE` Descriptors, usually labeled `legacyContentData`, will return the value as unicode. You will have to parse it separately as the data varies too much.
 
 ## Changelog
+**v1.1.0 (Dec 08 2017)**
+* Added maxRawLimit param
+* Added maxXMPLimit param
+* Added saveToFile param
+
 **v1.0.2 (Jan 13 2017)**
 * Added optional params to retrieve extended descriptor information
 * Updated example to reflect new optional params

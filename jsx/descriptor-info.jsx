@@ -5,7 +5,7 @@
   *
   * Author: Javier Aroche (https://github.com/JavierAroche)
   * Repo: https://github.com/JavierAroche/descriptor-info
-  * Version: v1.0.0
+  * Version: v1.1.0
   * License MIT
   *
   */
