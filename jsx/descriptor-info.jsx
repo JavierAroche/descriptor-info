@@ -45,7 +45,6 @@ DescriptorInfo.prototype.getProperties = function( theDesc, params ) {
 	}
 
 	if(params.hasOwnProperty('saveToFile')) {
-		alert(true);
 		this._saveToFile( descObject, this.descParams.saveToFile );
 	}
 
