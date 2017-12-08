@@ -344,6 +344,7 @@ var descObject = descriptorInfo.getProperties( desc, descFlags );
 * Added maxRawLimit param
 * Added maxXMPLimit param
 * Added saveToFile param
+* Improved ActionReference / ActionLists
 
 **v1.0.2 (Jan 13 2017)**
 * Added optional params to retrieve extended descriptor information
