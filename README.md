@@ -1,28 +1,27 @@
-# Descriptor-Info
+# Descriptor Info
 
-### Description
----------
-JSX module to recursively get all the properties in an ActionDescriptor used in Adobe applications
+## Description
+JSX module to recursively get all the properties in an `ActionDescriptor` used in Adobe applications.
 
-### Usage
----------
-#### getProperties
+## Usage
+
+**getProperties**
+
 Return complete Descriptor info in JSON format
 
 * Optional @param {Object} descFlags
-* Optional @flag {Boolean} reference - return reference descriptors. Could slightly affect speed.
+* Optional @flag {Boolean} reference - return reference descriptors. Could slighly affect speed.
 * Optional @flag {Boolean} extended - returns extended information about the descriptor.
 
-Sample code
-
-```
+**Sample code for getting Descriptor properties with getProperties**
+```javascript
 // Include the descriptorInfo module
-#include "~/Development/personal/descriptor-info/jsx/descriptor-info.jsx"
+#include "~/dev/descriptor-info/jsx/descriptor-info.jsx"
 
 // ActionDescriptor example
 var ref = new ActionReference();
 ref.putEnumerated( charIDToTypeID("Lyr "), charIDToTypeID("Ordn"), charIDToTypeID("Trgt") );
-var desc = executeActionGet(ref); 
+var desc = executeActionGet(ref);
 
 // Optional
 var descFlags = {
@@ -35,8 +34,8 @@ var descObject = descriptorInfo.getProperties( desc, descFlags );
 ```
 
 
-Returns JSON for requested Descriptor info. Sample reply:
-```
+**JSON returned for requested Descriptor info.**
+```javascript
 {
     "name": "Layer 0",
     "color": "none",
@@ -123,10 +122,10 @@ Returns JSON for requested Descriptor info. Sample reply:
     },
     "useAlignedRendering": false,
     "generatorSettings": {
-        
+
     },
     "keyOriginType": [
-        
+
     ],
     "fillEnabled": false,
     "animationProtection": {
@@ -147,8 +146,8 @@ Returns JSON for requested Descriptor info. Sample reply:
 }
 ```
 
-Sample reply with extended flag set to true:
-```
+**JSON returned with `extended: true`**
+```javascript
 {
     "name": {
         "stringID": "name",
@@ -308,33 +307,28 @@ Sample reply with extended flag set to true:
 }
 ```
 
-### Example
----------
-* [descriptor-info-example](https://github.com/JavierAroche/descriptor-info/tree/master/example)
+## Example
+[descriptor-info-example](https://github.com/JavierAroche/descriptor-info/tree/master/example)
 
+## Supported Descriptors
+* `DescValueType.BOOLEANTYPE`
+* `DescValueType.CLASSTYPE`
+* `DescValueType.DOUBLETYPE`
+* `DescValueType.ENUMERATEDTYPE`
+* `DescValueType.INTEGERTYPE`
+* `DescValueType.LISTTYPE`
+* `DescValueType.OBJECTTYPE`
+* `DescValueType.REFERENCETYPE`
+* `DescValueType.STRINGTYPE`
+* `DescValueType.UNITDOUBLE`
+* `DescValueType.ALIASTYPE`
+* `DescValueType.RAWTYPE`
 
-### Supported Descriptors
----------
-* DescValueType.BOOLEANTYPE
-* DescValueType.CLASSTYPE
-* DescValueType.DOUBLETYPE
-* DescValueType.ENUMERATEDTYPE
-* DescValueType.INTEGERTYPE
-* DescValueType.LISTTYPE
-* DescValueType.OBJECTTYPE
-* DescValueType.REFERENCETYPE
-* DescValueType.STRINGTYPE
-* DescValueType.UNITDOUBLE
-* DescValueType.ALIASTYPE
-* DescValueType.RAWTYPE
+## Known Limitations
+* `REFERENCETYPE` Descriptors will only return the Descriptor linked, but not it's actual properties. Adding this without properly testing can fall in an endless loop.
+* `RAWTYPE` Descriptors, usually labeled `legacyContentData`, will return the value as unicode. You will have to parse it separately as the data varies too much.
 
-### Known Limitations
----------
-* REFERENCETYPE Descriptors will only return the Descriptor linked, but not it's actual properties. Adding this without properly testing can fall in an endless loop.
-* RAWTYPE Descriptors, usually labeled "legacyContentData", will return the value as unicode. You will have to parse it separately as the data varies too much.
-
-### Changelog
----------
+## Changelog
 **v1.0.2 (Jan 13 2017)**
 * Added optional params to retrieve extended descriptor information
 * Updated example to reflect new optional params
@@ -349,6 +343,5 @@ Sample reply with extended flag set to true:
 **v0.0.0 (Dec 2 2016)**
 * Initial Commit
 
-### License
----------
+## License
 MIT © Javier Aroche
